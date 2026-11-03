@@ -37,4 +37,4 @@ Qalqan is not a replacement for official emergency services. The MVP does not cl
 - [Claude instructions](CLAUDE.md)
 
 ## Project status
-Requirements and implementation backlog are recorded in GitHub Issues. Application code, tests, provider integrations and deployment must be reported as complete only after implementation and verification. See the [open issues](../../issues).
+Requirements and implementation backlog are recorded in GitHub Issues. Application code, tests, provider integrations and deployment must be reported as complete only after implementation and verification. See the [open issues](https://github.com/zhansarakonysbai0407/Qalqan-ai-native/issues).
