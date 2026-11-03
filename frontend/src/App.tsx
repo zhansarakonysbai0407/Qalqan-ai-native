@@ -35,7 +35,7 @@ export default function App() {
         <a className="brand" href="/" aria-label="Qalqan home"><span className="brand-mark">Q</span> qalqan</a>
         <label className="language">
           <span className="sr-only">Language</span>
-          <select value={language} onChange={(event) => setLanguage(event.target.value)} aria-label="Language">
+          <select value={language} onChange={(event) => setLanguage(event.target.value as "en" | "ru" | "kk")} aria-label="Language">
             <option value="en">English</option><option value="ru">Русский</option><option value="kk">Қазақша</option>
           </select>
         </label>
