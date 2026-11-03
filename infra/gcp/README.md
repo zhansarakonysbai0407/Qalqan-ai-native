@@ -12,7 +12,7 @@ This configuration creates an Artifact Registry repository, a Secret Manager sec
 
 The database is **not provisioned by this Terraform configuration**. Use a PostgreSQL provider you have selected and reviewed for pricing. The app needs a PostgreSQL connection URL in Secret Manager.
 
-## Add the database connection secret
+## Bootstrap before first deployment\n\nThe GitHub Actions deployment workflow has a bootstrap phase. First, run the Terraform bootstrap locally (or use the documented target apply) to create the Artifact Registry repository and Secret Manager secret. Then add the database connection as the first secret version. Only after that, trigger the GitHub Actions workflow. The workflow builds and pushes the image, then applies the complete Cloud Run service.\n\nThe workflow supports automatic redeployment on pushes to `main` after you set the repository variable `ENABLE_GCP_DEPLOY=true`. It also supports manual `workflow_dispatch`. Configure these repository secrets: `GCP_PROJECT_ID`, `GCP_WORKLOAD_IDENTITY_PROVIDER`, and `GCP_DEPLOY_SERVICE_ACCOUNT`. Workload Identity Federation must trust this repository and branch.\n\n## Add the database connection secret
 
 After Terraform creates the secret, add its first version from a trusted terminal. Do not commit the URL or put it in `terraform.tfvars`:
 
