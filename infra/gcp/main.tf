@@ -13,7 +13,21 @@ provider "google" {
   region  = var.region
 }
 
+resource "google_project_service" "apis" {
+  for_each = toset([
+    "artifactregistry.googleapis.com",
+    "run.googleapis.com",
+    "secretmanager.googleapis.com",
+    "compute.googleapis.com",
+    "iam.googleapis.com"
+  ])
+  project            = var.project_id
+  service            = each.value
+  disable_on_destroy = false
+}
+
 resource "google_artifact_registry_repository" "qalqan" {
+  depends_on = [google_project_service.apis]
   location      = var.region
   repository_id = "qalqan"
   description   = "Qalqan application container images"
