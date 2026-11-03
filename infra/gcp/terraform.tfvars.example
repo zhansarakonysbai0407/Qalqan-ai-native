@@ -1,0 +1,3 @@
+project_id      = "YOUR_GOOGLE_CLOUD_PROJECT_ID"
+region          = "asia-southeast1"
+container_image = "asia-southeast1-docker.pkg.dev/YOUR_GOOGLE_CLOUD_PROJECT_ID/qalqan/app:latest"
