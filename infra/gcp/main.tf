@@ -35,6 +35,7 @@ resource "google_artifact_registry_repository" "qalqan" {
 }
 
 resource "google_secret_manager_secret" "database_url" {
+  depends_on = [google_project_service.apis]
   secret_id = "qalqan-database-url"
   replication {
     auto {}
