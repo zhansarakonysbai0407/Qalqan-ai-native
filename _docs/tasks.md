@@ -1,51 +1,34 @@
-# Qalqan task backlog
+# Qalqan assignment implementation tracker
 
-This is the initial backlog for GitHub Issues. Tasks are documentation/workflow tasks only; application implementation is intentionally excluded for now.
+This file tracks the current code branch and avoids marking incomplete work as finished.
 
-## DOC-1 — Record brainstorm and decisions
-**Goal:** Preserve the idea and all confirmed choices.
-**Acceptance criteria**
-- [ ] App idea and intended users are documented.
-- [ ] Confirmed decisions are recorded without inventing answers.
-- [ ] Safe Walk is marked unresolved.
-- [ ] Safety limitations are explicit.
+## Implemented in `assignment/full-stack-implementation`
 
-## DOC-2 — Define MVP plan
-**Goal:** Describe goals, scope, constraints, risks and release gates.
-**Acceptance criteria**
-- [ ] Confirmed features and deferred scope are listed.
-- [ ] Safety and reliability requirements are documented.
-- [ ] Unresolved requirements are clearly identified.
-- [ ] No implementation is started.
+- [x] React/Vite frontend scaffold with EN/RU/KK language selector.
+- [x] FastAPI backend scaffold with health and readiness endpoints.
+- [x] PostgreSQL SQLAlchemy models and initial Alembic migration.
+- [x] Multi-stage Dockerfile serving frontend and backend in one application container.
+- [x] Docker Compose app + PostgreSQL service, health checks and persistent DB volume.
+- [x] Frontend unit tests and backend readiness/schema tests.
+- [x] Playwright E2E tests for landing page, language switching, SOS demo confirmation/cancel, API health and PostgreSQL/schema readiness.
+- [x] GitHub Actions CI jobs for frontend, backend, Compose E2E and Docker build.
+- [x] Railway Dockerfile deployment configuration and deployment guide.
+- [x] Google Cloud Run Terraform scaffold, Secret Manager integration, and manual GitHub Actions deployment workflow.
+- [x] GitHub issues for feature-level E2E follow-up work.
 
-## DOC-3 — Define AI-native process and task template
-**Goal:** Make PM → Engineer → QA workflow repeatable.
-**Acceptance criteria**
-- [ ] Roles and handoffs are documented.
-- [ ] Task template includes context, acceptance criteria, test evidence and QA outcome.
-- [ ] No task can be closed without evidence.
+## Not yet complete / requires evidence or user credentials
 
-## DOC-4 — Add agent/role instructions
-**Goal:** Keep AI-assisted work aligned with the project rules.
-**Acceptance criteria**
-- [ ] AGENTS.md and CLAUDE.md point to the same project constraints.
-- [ ] PM, Engineer and QA role files exist.
-- [ ] Instructions prohibit fabricated decisions/results.
+- [ ] Migrate existing SQLite records. No prior SQLite database was found in the implementation branch; if one exists elsewhere, it must be supplied and migrated with a tested export/import procedure.
+- [ ] Implement real authentication, trusted contacts, PIN-protected SOS end flow, Safe Walk and permission-aware location sharing.
+- [ ] Implement real SMS/push provider integration and delivery-status handling.
+- [ ] Add feature-level E2E tests after those features exist; current tests cover only implemented UI and infrastructure checks.
+- [ ] Verify latest GitHub Actions run is green.
+- [ ] Deploy the demo to Railway or another selected host and record its URL.
+- [ ] Configure a hosted PostgreSQL database and securely add its URL to the hosting platform / Google Secret Manager.
+- [ ] Configure Google Cloud Workload Identity Federation secrets and run the manual Terraform deployment.
+- [ ] Verify production deployment, migrations and health checks.
+- [ ] Configure automatic redeployment on commits after a successful hosted deployment.
 
-## DOC-5 — Finalize unresolved MVP requirements
-**Goal:** Ask and record the remaining Safe Walk decision before implementation.
-**Acceptance criteria**
-- [ ] User explicitly chooses an option.
-- [ ] Brainstorm, plan and backlog are updated consistently.
-- [ ] Implementation remains blocked until this is complete.
+## Important
 
-## DOC-6 — Review documentation package
-**Goal:** Cross-check files and issues against the workflow assignment.
-**Acceptance criteria**
-- [ ] All expected Markdown files are present.
-- [ ] Relative links work.
-- [ ] GitHub Issues reflect the backlog and have detailed acceptance criteria.
-- [ ] Status claims are evidence-based.
-
-## Implementation tasks
-Not created yet. They must wait until MVP requirements are complete and the user asks to proceed beyond documentation.
+The current SOS button is a demo-only flow. A deployed copy must not be described as sending alerts or contacting emergency services.
