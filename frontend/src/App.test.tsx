@@ -1,7 +1,12 @@
-import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
+
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 describe("Qalqan landing page", () => {
   it("shows the safety introduction and SOS action", () => {
@@ -17,7 +22,7 @@ describe("Qalqan landing page", () => {
     render(<App />);
     await user.click(screen.getByRole("button", { name: /activate sos/i }));
     expect(screen.getByRole("dialog")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /confirm \(demo\)/i }));
+    await user.click(screen.getByRole("button", { name: /confirm \\(demo\\)/i }));
     expect(screen.getByRole("status")).toHaveTextContent(/demo only/i);
   });
 });
