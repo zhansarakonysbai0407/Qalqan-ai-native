@@ -1,0 +1,55 @@
+name: Deploy to Google Cloud Run
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOY_SERVICE_ACCOUNT }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Configure Terraform variables
+        working-directory: infra/gcp
+        run: |
+          cat > terraform.tfvars <<EOF
+          project_id = "${{ secrets.GCP_PROJECT_ID }}"
+          region = "asia-southeast1"
+          container_image = "asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/qalqan/app:${GITHUB_SHA}"
+          EOF
+
+      - name: Create registry and database secret
+        working-directory: infra/gcp
+        run: |
+          terraform init
+          terraform apply -auto-approve -target=google_artifact_registry_repository.qalqan -target=google_secret_manager_secret.database_url
+
+      - name: Build and push container
+        run: |
+          gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet
+          docker build -t "asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/qalqan/app:${GITHUB_SHA}" .
+          docker push "asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/qalqan/app:${GITHUB_SHA}"
+
+      - name: Deploy Cloud Run service with Terraform
+        working-directory: infra/gcp
+        run: terraform apply -auto-approve
+
+      - name: Show service URL
+        working-directory: infra/gcp
+        run: terraform output -raw service_url
