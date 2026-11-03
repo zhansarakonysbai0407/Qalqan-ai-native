@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 type Health = { status: string };
 
 export default function App() {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState<"en" | "ru" | "kk">("en");
   const [apiStatus, setApiStatus] = useState("Checking connection…");
   const [confirming, setConfirming] = useState(false);
   const [demoNotice, setDemoNotice] = useState("");
