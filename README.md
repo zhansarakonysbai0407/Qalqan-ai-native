@@ -1,28 +1,57 @@
-# Qalqan — AI-native workflow
+# Qalqan — personal safety app prototype
 
-Qalqan is a proposed personal-safety SOS app concept for Kazakhstan. This repository currently contains planning and workflow documentation only; no application code is included yet.
+Qalqan is a personal-safety application concept for Kazakhstan. This repository now contains a full-stack starter for the assignment: React/Vite frontend, FastAPI backend, PostgreSQL schema/migrations, Docker Compose, Playwright E2E tests, and GitHub Actions CI.
 
-## Current scope decisions
-- MVP languages: Kazakh, Russian, English.
-- Risk-zone map: deferred to a later version.
-- SOS activation: tap and confirm, or press and hold for rapid activation.
-- SOS stop: PIN established in advance is required.
-- Trusted contacts: up to five.
-- Alerts: push and SMS through configured services; delivery must not be claimed until integrations are configured and tested.
-- Location: live updates during an active SOS, subject to permissions, connectivity, GPS and OS background limits.
-- Safe Walk: **not decided yet**. See `chat-brainstorm.md`.
+## Current implementation status
 
-## Documentation
-- [Brainstorm history](chat-brainstorm.md)
-- [Plan](_docs/plan.md)
-- [Task backlog](_docs/tasks.md)
-- [Process](_docs/process.md)
-- [Task template](_docs/task-template.md)
-- [PM role](_docs/team/pm.md)
-- [Software Engineer role](_docs/team/software-engineer.md)
-- [QA Engineer role](_docs/team/qa-engineer.md)
-- [Agent instructions](AGENTS.md)
-- [Claude instructions](CLAUDE.md)
+- **Frontend:** responsive demo UI with English, Russian, and Kazakh language selection.
+- **SOS:** confirmation dialog and demo-only result. No real alerts are sent.
+- **Backend:** FastAPI health/readiness endpoints; readiness checks PostgreSQL connectivity and required schema tables.
+- **Database:** PostgreSQL via SQLAlchemy and Alembic initial migration. No legacy SQLite data migration has been performed because no existing SQLite application/data store was identified in this branch.
+- **Docker:** one multi-stage Dockerfile builds the frontend and serves it from FastAPI; Compose starts the app and PostgreSQL.
+- **Tests:** frontend unit tests, backend health/readiness tests, and Playwright tests for landing page, language switching, SOS demo flow, API and PostgreSQL readiness.
+- **CI:** frontend, backend, Docker build and Compose-backed E2E workflow.
+- **Deployment:** Railway configuration and Google Cloud Run Terraform/workflow scaffolding are included. Hosted deployment is not complete until external accounts, secrets, database URL and a successful deploy are configured.
 
-## Status
-Documentation and issue-tracking setup only. Requirements are not fully finalized; implementation has intentionally not started.
+## Run locally
+
+```bash
+cp .env.example .env
+# Change the local PostgreSQL password in .env before sharing or deploying.
+docker compose up --build
+```
+
+Open http://localhost:8000. API health: http://localhost:8000/api/health. Database readiness: http://localhost:8000/api/ready.
+
+Run frontend tests:
+
+```bash
+cd frontend
+npm install
+npm test
+npm run build
+```
+
+Run backend tests:
+
+```bash
+cd backend
+pip install -r requirements.txt
+pytest -q
+```
+
+Run Playwright E2E from the repository root after starting the Compose stack:
+
+```bash
+npm install
+npx playwright install chromium
+npx playwright test
+```
+
+## Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) and [Google Cloud Terraform instructions](infra/gcp/README.md). Cloud resources are not created automatically. Review provider pricing and configure secrets before deploying.
+
+## Safety notice
+
+This is a software prototype, not an operational emergency-response service. There is no user authentication, trusted-contact CRUD API, PIN verification, SMS/push integration, live location pipeline, Safe Walk backend, or police/emergency-services integration. Do not rely on this demo in a real emergency.
