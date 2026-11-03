@@ -1,51 +1,39 @@
 # Qalqan task backlog
 
-This is the initial backlog for GitHub Issues. Tasks are documentation/workflow tasks only; application implementation is intentionally excluded for now.
+All work is tracked in GitHub Issues. Implementation tasks are split by feature and delivery concern.
 
-## DOC-1 — Record brainstorm and decisions
-**Goal:** Preserve the idea and all confirmed choices.
-**Acceptance criteria**
-- [ ] App idea and intended users are documented.
-- [ ] Confirmed decisions are recorded without inventing answers.
-- [ ] Safe Walk is marked unresolved.
-- [ ] Safety limitations are explicit.
+## Documentation and requirements
+- DOC-1 — [Brainstorm and decisions](../../issues/1)
+- DOC-2 — [MVP plan](../../issues/2)
+- DOC-3 — [AI-native process and task template](../../issues/3)
+- DOC-4 — [Agent and team role instructions](../../issues/4)
+- DOC-5 — [Safe Walk MVP decision](../../issues/5)
+- DOC-6 — [Documentation audit](../../issues/6)
 
-## DOC-2 — Define MVP plan
-**Goal:** Describe goals, scope, constraints, risks and release gates.
-**Acceptance criteria**
-- [ ] Confirmed features and deferred scope are listed.
-- [ ] Safety and reliability requirements are documented.
-- [ ] Unresolved requirements are clearly identified.
-- [ ] No implementation is started.
+## Application implementation
+- [#8 Full-stack foundation](../../issues/8)
+- [#9 PostgreSQL and migrations](../../issues/9)
+- [#10 Authentication](../../issues/10)
+- [#11 SOS and PIN cancellation](../../issues/11)
+- [#12 Trusted contacts](../../issues/12)
+- [#13 Location sharing](../../issues/13)
+- [#14 Safe Walk timer/check-ins](../../issues/14)
+- [#15 Kazakh/Russian/English localization](../../issues/15)
+- [#16 Push/SMS provider adapters](../../issues/16)
 
-## DOC-3 — Define AI-native process and task template
-**Goal:** Make PM → Engineer → QA workflow repeatable.
-**Acceptance criteria**
-- [ ] Roles and handoffs are documented.
-- [ ] Task template includes context, acceptance criteria, test evidence and QA outcome.
-- [ ] No task can be closed without evidence.
+## Testing and delivery
+- [#7 E2E authentication](../../issues/7)
+- [#22 E2E SOS](../../issues/22)
+- [#23 E2E trusted contacts](../../issues/23)
+- [#24 E2E location](../../issues/24)
+- [#25 E2E Safe Walk](../../issues/25)
+- [#26 E2E localization](../../issues/26)
+- [#27 E2E notification status](../../issues/27)
+- [#17 Dockerfile and Compose](../../issues/17)
+- [#18 Backend/frontend/integration tests](../../issues/18)
+- [#19 GitHub Actions CI](../../issues/19)
+- [#20 First deployment](../../issues/20)
+- [#21 Google Cloud Terraform](../../issues/21)
 
-## DOC-4 — Add agent/role instructions
-**Goal:** Keep AI-assisted work aligned with the project rules.
-**Acceptance criteria**
-- [ ] AGENTS.md and CLAUDE.md point to the same project constraints.
-- [ ] PM, Engineer and QA role files exist.
-- [ ] Instructions prohibit fabricated decisions/results.
-
-## DOC-5 — Finalize unresolved MVP requirements
-**Goal:** Ask and record the remaining Safe Walk decision before implementation.
-**Acceptance criteria**
-- [ ] User explicitly chooses an option.
-- [ ] Brainstorm, plan and backlog are updated consistently.
-- [ ] Implementation remains blocked until this is complete.
-
-## DOC-6 — Review documentation package
-**Goal:** Cross-check files and issues against the workflow assignment.
-**Acceptance criteria**
-- [ ] All expected Markdown files are present.
-- [ ] Relative links work.
-- [ ] GitHub Issues reflect the backlog and have detailed acceptance criteria.
-- [ ] Status claims are evidence-based.
-
-## Implementation tasks
-Not created yet. They must wait until MVP requirements are complete and the user asks to proceed beyond documentation.
+## Rule
+An issue is complete only when its acceptance criteria have been verified and evidence is recorded. Never mark tests or deployments complete based on configuration alone.
