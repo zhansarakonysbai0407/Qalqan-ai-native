@@ -6,28 +6,27 @@ A person facing a dangerous situation may need a fast way to alert trusted peopl
 ## Intended users
 People in Kazakhstan who want a prepared way to alert trusted contacts during an emergency.
 
-## Goals
+## MVP goals
 - Provide two deliberate SOS activation paths.
 - Notify up to five trusted contacts using configured push and SMS services.
 - Share location updates during an active SOS when device permissions and connectivity permit.
 - Require a preconfigured PIN to end an active SOS.
-- Support Kazakh, Russian and English in the MVP.
+- Support Kazakh, Russian and English.
+- Provide a limited Safe Walk timer with manual check-ins.
 
-## Explicitly deferred
-- Risk-zone map: deferred to a later version.
-- Any direct integration with police/emergency dispatch: not assumed and requires separate verification/authorization.
-- Application implementation: blocked until requirements, including Safe Walk, are finalized.
-
-## Requirements already decided
+## Confirmed scope
 - Activation: tap + confirmation, or press and hold for quick activation.
 - End SOS: PIN required.
 - Contacts: maximum five.
 - Alerts: push and SMS through configured providers.
-- Location: live updates during active SOS.
+- Location: updates during active SOS, subject to device constraints.
 - Languages: Kazakh, Russian, English.
+- Safe Walk: timer + manual check-ins; no automatic contact escalation in MVP.
 
-## Unresolved requirement
-Safe Walk: decide whether it is included in MVP, deferred, or includes automatic escalation after a missed check-in.
+## Explicitly deferred / out of scope
+- Risk-zone map: deferred to a later version.
+- Direct integration with police/emergency dispatch: not assumed and requires separate verification/authorization.
+- Automatic Safe Walk escalation to contacts: deferred until false-positive handling and user consent are designed.
 
 ## Non-functional and safety requirements
 - Clear permission prompts and visible indication while location is shared.
@@ -36,10 +35,20 @@ Safe Walk: decide whether it is included in MVP, deferred, or includes automatic
 - Securely store PIN verification data; do not store a plaintext PIN.
 - Minimize sensitive data retention and restrict access to location history.
 - Provide localized interface and accessible SOS controls.
+- Use PostgreSQL as the application database; no SQLite runtime dependency.
+
+## Architecture decision
+- Frontend: React + TypeScript, built to static assets.
+- Backend: Python + FastAPI, serving API and built frontend assets.
+- Database: PostgreSQL.
+- Containers: one multi-stage application Dockerfile plus a PostgreSQL service in Docker Compose.
+- Browser E2E: Playwright.
+- CI/CD: GitHub Actions.
+- Infrastructure as code: Google Cloud + Terraform, only after checking budget/free-tier eligibility and obtaining explicit approval for resource creation.
 
 ## Release gates
-1. Brainstorm requirements complete.
-2. PM review of scope and acceptance criteria.
-3. Architecture and threat/risk review before implementation.
-4. Implementation and QA only after scope approval.
-5. Real provider integrations tested before any claim of real delivery.
+1. Confirm scope and acceptance criteria in GitHub Issues.
+2. Review architecture, privacy and safety risks.
+3. Implement with tests and code review.
+4. Test provider integrations before making delivery claims.
+5. Deploy only with documented budget guardrails and user authorization.
