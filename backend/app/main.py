@@ -20,9 +20,11 @@ def readiness():
     except Exception:
         return {"status": "not_ready", "database": "unavailable"}
 
-static_dir = Path(__file__).resolve().parents[2] / "static"
+static_dir = Path(__file__).resolve().parents[1] / "static"
 if static_dir.exists():
-    app.mount("/assets", StaticFiles(directory=static_dir / "assets"), name="assets")
+    assets_dir = static_dir / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
     @app.get("/{full_path:path}")
     def frontend(full_path: str):
