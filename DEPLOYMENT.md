@@ -16,7 +16,7 @@ The repository includes `railway.toml` and a single multi-stage `Dockerfile`. Cr
 
 The local Docker Compose file remains the reproducible development/test stack. A managed hosting platform may represent the database as a separate managed service rather than deploying the Compose file as-is. Check current plan pricing and usage limits before deploying.
 
-## Google Cloud production-style deployment
+## Google Cloud production-style deployment\n\nThe GitHub Actions workflow can be manually triggered. To enable automatic deployments from `main`, configure the three `GCP_*` repository secrets and set the repository variable `ENABLE_GCP_DEPLOY` to `true`. Follow the bootstrap and Secret Manager instructions in [infra/gcp/README.md](infra/gcp/README.md).
 
 See [infra/gcp/README.md](infra/gcp/README.md). The Terraform configuration and manual GitHub Actions workflow are scaffolding; they do not create cloud resources until you configure Google Cloud identity and run the workflow. You must also add a PostgreSQL URL to Secret Manager. Review costs before applying.
 
