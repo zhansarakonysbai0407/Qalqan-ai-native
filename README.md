@@ -1,16 +1,28 @@
-# Qalqan — AI-native workflow
+# Qalqan — personal safety app for Kazakhstan
 
-Qalqan is a proposed personal-safety SOS app concept for Kazakhstan. This repository currently contains planning and workflow documentation only; no application code is included yet.
+Qalqan is a personal-safety application concept for people in Kazakhstan. The MVP focuses on SOS activation, trusted contacts, consent-based location sharing and a limited Safe Walk check-in flow.
 
-## Current scope decisions
-- MVP languages: Kazakh, Russian, English.
+## MVP decisions
+- Languages: Kazakh, Russian and English.
 - Risk-zone map: deferred to a later version.
 - SOS activation: tap and confirm, or press and hold for rapid activation.
 - SOS stop: PIN established in advance is required.
 - Trusted contacts: up to five.
-- Alerts: push and SMS through configured services; delivery must not be claimed until integrations are configured and tested.
-- Location: live updates during an active SOS, subject to permissions, connectivity, GPS and OS background limits.
-- Safe Walk: **not decided yet**. See `chat-brainstorm.md`.
+- Alerts: push and SMS through configured providers; delivery must not be claimed until integrations are configured and confirmed.
+- Location: updates during an active SOS, subject to permissions, connectivity, GPS and OS background limits.
+- Safe Walk: included as a limited timer + manual check-in feature. No automatic escalation to contacts in this MVP.
+
+## Planned technical stack
+- Frontend: React + TypeScript.
+- Backend: Python + FastAPI.
+- Database: PostgreSQL.
+- Containerization: multi-stage Dockerfile + Docker Compose.
+- E2E: Playwright.
+- CI: GitHub Actions.
+- Cloud IaC: Google Cloud + Terraform, subject to free-tier/credit and budget verification.
+
+## Safety notice
+Qalqan is not a replacement for official emergency services. The MVP does not claim direct police/dispatch integration. Real push/SMS delivery requires configured providers and successful delivery confirmation. Location sharing is subject to device permission and platform limitations.
 
 ## Documentation
 - [Brainstorm history](chat-brainstorm.md)
@@ -24,5 +36,5 @@ Qalqan is a proposed personal-safety SOS app concept for Kazakhstan. This reposi
 - [Agent instructions](AGENTS.md)
 - [Claude instructions](CLAUDE.md)
 
-## Status
-Documentation and issue-tracking setup only. Requirements are not fully finalized; implementation has intentionally not started.
+## Project status
+Requirements and implementation backlog are recorded in GitHub Issues. Application code, tests, provider integrations and deployment must be reported as complete only after implementation and verification. See the [open issues](../../issues).
