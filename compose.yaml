@@ -7,7 +7,7 @@ services:
     environment:
       APP_ENV: ${APP_ENV:-development}
       OTEL_SERVICE_NAME: qalqan-api
-      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://otel-collector:4318}
     depends_on:
       postgres:
         condition: service_healthy
