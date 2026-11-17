@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [main, "feat/**"]
+    branches: [main, "feat/**", "chore/**"]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -13,18 +13,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
+        with:
+          python-version: "3.12"
       - name: Install and test API
         run: |
           python -m pip install -r app/requirements-test.txt
           PYTHONPATH=app pytest -q app/test_main.py
-      - name: Validate Compose files
+      - name: Install and test AI on-call responder
+        run: |
+          python -m pip install -r oncall/requirements-test.txt
+          PYTHONPATH=oncall pytest -q oncall/test_responder.py
+      - name: Validate Compose environments
         run: |
           cp .env.example .env
           docker compose -f compose.yaml -f compose.dev.yaml config --quiet
-          docker compose -f compose.yaml -f compose.prod.yaml config --quiet
+          docker compose -f compose.yaml -f compose.hosted.yaml config --quiet
+          docker compose -f compose.yaml -f compose.hosted.yaml -f compose.prod.yaml config --quiet
       - name: Build API image
-        run: docker build -f app/Dockerfile -t qalqan:${{ github.sha }} .
+        run: docker build -f app/Dockerfile -t qalqan-api:${{ github.sha }} .
+      - name: Build AI on-call image
+        run: docker build -f oncall/Dockerfile -t qalqan-oncall:${{ github.sha }} ./oncall
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
