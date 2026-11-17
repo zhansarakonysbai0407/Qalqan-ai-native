@@ -35,12 +35,13 @@ jobs:
           HOST: ${{ secrets.DEPLOY_HOST }}
           USER: ${{ secrets.DEPLOY_USER }}
           KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          OTEL_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
           SHA: ${{ inputs.image_sha }}
           OWNER: ${{ github.repository_owner }}
         run: |
-          test -n "$HOST" && test -n "$USER" && test -n "$KEY"
+          test -n "$HOST" && test -n "$USER" && test -n "$KEY" && test -n "$OTEL_ENDPOINT"
           install -m 700 -d ~/.ssh
           printf '%s' "$KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
-          ssh "$USER@$HOST" "cd /opt/qalqan-production && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA docker compose -f compose.yaml -f compose.prod.yaml pull app && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA docker compose -f compose.yaml -f compose.prod.yaml up -d app"
+          ssh "$USER@$HOST" "cd /opt/qalqan-production && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA OTEL_EXPORTER_OTLP_ENDPOINT='$OTEL_ENDPOINT' docker compose -f compose.yaml -f compose.prod.yaml pull app && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA OTEL_EXPORTER_OTLP_ENDPOINT='$OTEL_ENDPOINT' docker compose -f compose.yaml -f compose.prod.yaml up -d app"
