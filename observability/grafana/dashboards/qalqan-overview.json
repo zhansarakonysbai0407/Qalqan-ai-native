@@ -1,0 +1,16 @@
+{
+  "uid": "qalqan-overview",
+  "title": "Qalqan Application Overview",
+  "tags": ["qalqan", "safety", "observability"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "panels": [
+    {"id":1,"type":"stat","title":"SOS activation attempts (1h)","gridPos":{"x":0,"y":0,"w":6,"h":5},"targets":[{"expr":"sum(increase(qalqan_qalqan_sos_activations_total[1h]))","refId":"A"}]},
+    {"id":2,"type":"timeseries","title":"Notification outcomes","gridPos":{"x":6,"y":0,"w":12,"h":8},"targets":[{"expr":"sum by (outcome) (rate(qalqan_qalqan_notifications_results_total[5m]))","legendFormat":"{{outcome}}","refId":"A"}]},
+    {"id":3,"type":"timeseries","title":"SOS state transitions","gridPos":{"x":18,"y":0,"w":6,"h":8},"targets":[{"expr":"sum by (from_state,to_state) (rate(qalqan_qalqan_sos_transitions_total[5m]))","legendFormat":"{{from_state}} → {{to_state}}","refId":"A"}]},
+    {"id":4,"type":"timeseries","title":"API request rate","gridPos":{"x":0,"y":8,"w":12,"h":8},"targets":[{"expr":"sum(rate(http_server_duration_milliseconds_count[5m]))","legendFormat":"requests/s","refId":"A"}]},
+    {"id":5,"type":"timeseries","title":"Active Safe Walk sessions","gridPos":{"x":12,"y":8,"w":12,"h":8},"targets":[{"expr":"qalqan_qalqan_safewalk_active","legendFormat":"active sessions","refId":"A"}]}
+  ]
+}

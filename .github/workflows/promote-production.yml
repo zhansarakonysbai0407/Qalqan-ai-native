@@ -1,0 +1,51 @@
+name: Promote development revision to production
+on:
+  workflow_dispatch:
+    inputs:
+      image_sha:
+        description: "Exact 40-character commit SHA already tested and merged to main"
+        required: true
+        type: string
+      confirm_production:
+        description: "Type PROMOTE to confirm"
+        required: true
+        type: string
+permissions: {contents: read, packages: read, actions: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: main}
+      - name: Require main-branch revision, explicit confirmation and successful CI
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SHA: ${{ inputs.image_sha }}
+          CONFIRM: ${{ inputs.confirm_production }}
+        run: |
+          [[ "$SHA" =~ ^[0-9a-f]{40}$ ]]
+          test "$CONFIRM" = "PROMOTE"
+          git fetch origin "$SHA"
+          git merge-base --is-ancestor "$SHA" origin/main
+          gh api "repos/$REPOSITORY/commits/$SHA/check-runs" --jq '[.check_runs[] | select(.name == "test") | .conclusion] | any(. == "success")' | grep -qx true
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy selected image to production
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER: ${{ secrets.DEPLOY_USER }}
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          OTEL_ENDPOINT: ${{ secrets.OTEL_EXPORTER_OTLP_ENDPOINT }}
+          SHA: ${{ inputs.image_sha }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          test -n "$HOST" && test -n "$USER" && test -n "$KEY" && test -n "$OTEL_ENDPOINT"
+          install -m 700 -d ~/.ssh
+          printf '%s' "$KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
+          ssh "$USER@$HOST" "cd /opt/qalqan-production && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA APP_ENV=production OTEL_EXPORTER_OTLP_ENDPOINT='$OTEL_ENDPOINT' docker compose -f compose.yaml -f compose.hosted.yaml -f compose.prod.yaml pull app && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA APP_ENV=production OTEL_EXPORTER_OTLP_ENDPOINT='$OTEL_ENDPOINT' docker compose -f compose.yaml -f compose.hosted.yaml -f compose.prod.yaml up -d app"

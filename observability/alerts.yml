@@ -1,0 +1,30 @@
+groups:
+  - name: qalqan-application
+    rules:
+      - alert: QalqanApiUnavailable
+        expr: up{job="qalqan-otel"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Qalqan telemetry endpoint is unavailable"
+          description: "Prometheus cannot scrape the OpenTelemetry Collector metrics endpoint."
+          runbook: "api-unavailable.md"
+      - alert: QalqanNotificationFailures
+        expr: increase(qalqan_qalqan_notifications_results_total{outcome="failed"}[5m]) >= 3
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Notification provider failures increased"
+          description: "At least three failed notification outcomes were recorded in five minutes."
+          runbook: "notification-failures.md"
+      - alert: QalqanApiHighRequestRateErrors
+        expr: (sum(rate(http_server_duration_milliseconds_count{http_response_status_code=~"5.."}[5m])) / clamp_min(sum(rate(http_server_duration_milliseconds_count[5m])), 0.001)) > 0.05
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Qalqan API 5xx ratio is above 5 percent"
+          description: "Investigate recent traces and application logs."
+          runbook: "api-errors.md"
