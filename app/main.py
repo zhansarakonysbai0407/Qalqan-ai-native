@@ -39,8 +39,10 @@ logger_provider = LoggerProvider(resource=resource)
 logger_provider.add_log_record_processor(BatchLogRecordProcessor(OTLPLogExporter(endpoint=f"{endpoint}/v1/logs")))
 set_logger_provider(logger_provider)
 otel_handler = LoggingHandler(level=logging.INFO, logger_provider=logger_provider)
-logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"), format="%(asctime)s %(levelname)s %(name)s %(message)s")
-logging.getLogger().addHandler(otel_handler)
+root_logger = logging.getLogger()
+root_logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
+root_logger.addHandler(logging.StreamHandler())
+root_logger.addHandler(otel_handler)
 logger = logging.getLogger("qalqan")
 
 @asynccontextmanager
