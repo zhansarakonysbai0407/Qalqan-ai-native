@@ -1,0 +1,31 @@
+name: Deploy development
+on:
+  workflow_dispatch:
+    inputs:
+      image_sha:
+        description: "40-character commit SHA already published by CI"
+        required: true
+        type: string
+permissions: {contents: read, packages: read}
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Validate image SHA
+        env: {SHA: "${{ inputs.image_sha }}"}
+        run: '[[ "$SHA" =~ ^[0-9a-f]{40}$ ]]'
+      - name: Deploy to development host
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER: ${{ secrets.DEPLOY_USER }}
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SHA: ${{ inputs.image_sha }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          test -n "$HOST" && test -n "$USER" && test -n "$KEY"
+          install -m 700 -d ~/.ssh
+          printf '%s' "$KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
+          ssh "$USER@$HOST" "cd /opt/qalqan-development && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA docker compose -f compose.yaml -f compose.prod.yaml pull app && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA docker compose -f compose.yaml -f compose.prod.yaml up -d app"
