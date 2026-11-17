@@ -6,15 +6,24 @@ on:
         description: "40-character commit SHA already published by CI"
         required: true
         type: string
-permissions: {contents: read, packages: read}
+permissions: {contents: read, packages: read, actions: read}
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify successful CI check for selected image
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SHA: ${{ inputs.image_sha }}
+        run: |
+          [[ "$SHA" =~ ^[0-9a-f]{40}$ ]]
+          gh api "repos/$REPOSITORY/commits/$SHA/check-runs" --jq '[.check_runs[] | select(.name == "test") | .conclusion] | any(. == "success")' | grep -qx true
   deploy:
+    needs: verify
     runs-on: ubuntu-latest
     environment: development
     steps:
-      - name: Validate image SHA
-        env: {SHA: "${{ inputs.image_sha }}"}
-        run: '[[ "$SHA" =~ ^[0-9a-f]{40}$ ]]'
       - name: Deploy to development host
         env:
           HOST: ${{ secrets.DEPLOY_HOST }}
@@ -29,4 +38,4 @@ jobs:
           printf '%s' "$KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts
-          ssh "$USER@$HOST" "cd /opt/qalqan-development && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA OTEL_EXPORTER_OTLP_ENDPOINT='$OTEL_ENDPOINT' docker compose -f compose.yaml -f compose.prod.yaml pull app && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA OTEL_EXPORTER_OTLP_ENDPOINT='$OTEL_ENDPOINT' docker compose -f compose.yaml -f compose.prod.yaml up -d app"
+          ssh "$USER@$HOST" "cd /opt/qalqan-development && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA APP_ENV=development OTEL_EXPORTER_OTLP_ENDPOINT='$OTEL_ENDPOINT' docker compose -f compose.yaml -f compose.hosted.yaml pull app && GHCR_OWNER=$OWNER IMAGE_TAG=$SHA APP_ENV=development OTEL_EXPORTER_OTLP_ENDPOINT='$OTEL_ENDPOINT' docker compose -f compose.yaml -f compose.hosted.yaml up -d app"
