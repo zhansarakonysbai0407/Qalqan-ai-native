@@ -35,5 +35,8 @@ All work is tracked in GitHub Issues. Implementation tasks are split by feature 
 - [#20 First deployment](https://github.com/zhansarakonysbai0407/Qalqan-ai-native/issues/20)
 - [#21 Google Cloud Terraform](https://github.com/zhansarakonysbai0407/Qalqan-ai-native/issues/21)
 
+## DevOps and observability
+- [#29 Environments, manual production promotion, OpenTelemetry, dashboards, alerts and AI on-call](https://github.com/zhansarakonysbai0407/Qalqan-ai-native/issues/29)
+
 ## Rule
 An issue is complete only when its acceptance criteria have been verified and evidence is recorded. Never mark tests or deployments complete based on configuration alone.
